@@ -37,7 +37,7 @@ function ResetPosition() {
   ballX = width / 2;
   ballY = height / 2;
 
-  // Extra2: ボールの速度を変更してみよう
+  // Extra: ボールの速度を変更してみよう
   ballXSpeed = 3;
   ballYSpeed = -3;
 }
