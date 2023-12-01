@@ -54,11 +54,10 @@ function draw() {
 }
 
 function movePaddle() {
-  if (keyIsDown(LEFT_ARROW)) {
-    paddleX -= 5;
-  } else if (keyIsDown(RIGHT_ARROW)) {
-    paddleX += 5;
-  }
+
+  // Mission2: パドルの移動を実装しよう
+  
+
   if (paddleX < 0) {
     paddleX = 0;
   }
@@ -87,12 +86,13 @@ function moveBall() {
     ballY = ballRadius; // 上の壁にボールが埋まらないようにする
     ballYSpeed *= -1;
   }
-  if (ballY + ballRadius > 400) {
+  if (ballY + ballRadius > height) {
     // ボールが底に到達した場合、ライフを減らす
     lives--;
 
-    //Mission2: ボールとパドルの位置をリセットする
+    //Mission3: ボールとパドルの位置をリセットさせよう
 
+    
   }
 }
 
@@ -185,8 +185,8 @@ function drawLives() {
   textSize(20);
   textAlign(LEFT, TOP);
 
-  //Mission3: ライフを表示してみよう
-  text(``, 5, 5);
+  //Mission4: ライフを表示してみよう
+
 }
 
 function gameOver() {
@@ -215,8 +215,8 @@ function showClearScreen() {
   fill(0);
   textSize(30);
   textAlign(CENTER, CENTER);
-  //Extra1: クリアメッセージを表示させて
-  text("", width / 2, height / 2);
+  //Mission5: クリアメッセージを表示させてみよう
+
   textSize(20);
   text("Press SPACE to Restart", width / 2, height / 2 + 50);
   noLoop();
