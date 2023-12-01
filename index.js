@@ -75,10 +75,16 @@ function drawPaddle() {
 function moveBall() {
   ballX += ballXSpeed;
   ballY += ballYSpeed;
-  if (ballX - ballRadius < 0 || ballX + ballRadius > width) {
+  if (ballX - ballRadius < 0) {
+    ballX = ballRadius; // 左の壁にボールが埋まらないようにする
+    ballXSpeed *= -1;
+  }
+  if (ballX + ballRadius > width) {
+    ballX = width - ballRadius; // 右の壁にボールが埋まらないようにする
     ballXSpeed *= -1;
   }
   if (ballY - ballRadius < 0) {
+    ballY = ballRadius; // 上の壁にボールが埋まらないようにする
     ballYSpeed *= -1;
   }
   if (ballY + ballRadius > height) {
