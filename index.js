@@ -20,17 +20,26 @@ function setup() {
   paddleHeight = 10;
   paddleX = width / 2 - paddleWidth / 2;
   ballRadius = 10;
-  ballX = width / 2;
-  ballY = height / 2;
-  ballXSpeed = 3;
-  ballYSpeed = -3;
+  ResetPosition();
+
+  // Mission1: ブロックの幅と高さ、行数と列数を設定しよう！
   brickWidth = 40;
   brickHeight = 30;
-  brickRows = 5;
-  brickColumns = 10;
+  brickRows = 3;
+  brickColumns = 8;
+
   bricks = createBricks();
   lives = 3; // 初期のライフ数
   ClearFlag = false;
+}
+
+function ResetPosition() {
+  ballX = width / 2;
+  ballY = height / 2;
+
+  // Extra2: ボールの速度を変更してみよう
+  ballXSpeed = 3;
+  ballYSpeed = -3;
 }
 
 function draw() {
@@ -75,14 +84,11 @@ function moveBall() {
   if (ballY + ballRadius > height) {
     // ボールが底に到達した場合、ライフを減らす
     lives--;
+
+    //Mission2: ボールとパドルの位置をリセットする
     if (lives > 0) {
-      // 残りのライフがある場合、ボールとパドルの位置をリセットする
-      ballX = width / 2;
-      ballY = height / 2;
-      ballXSpeed = 3;
-      ballYSpeed = -3;
+      ResetPosition();
     } else {
-      // 残りのライフがない場合、ゲームオーバー
       gameOver();
     }
   }
@@ -95,9 +101,10 @@ function drawBall() {
 
 function createBricks() {
   let bricks = [];
+  brickRows += 2;
+  brickColumns += 2;
   for (let row = 0; row < brickRows; row++) {
     for (let column = 0; column < brickColumns; column++) {
-      // Exclude the blocks within one cell of the borders
       if (
         row > 0 &&
         row < brickRows - 1 &&
@@ -121,16 +128,40 @@ function drawBricks() {
 }
 
 function checkCollision() {
-  // ボールとパドルの当たり判定
+  // ボールとパドルの衝突を検出する
   if (
     ballY + ballRadius > height - paddleHeight &&
-    ballX + ballRadius > paddleX &&
-    ballX - ballRadius < paddleX + paddleWidth
+    ballX > paddleX &&
+    ballX < paddleX + paddleWidth
   ) {
-    ballYSpeed *= -1;
+    console.info("Ball hits paddle");
+    reverseBallYSpeed();
+
+    // パドルの中心からの距離
+    let deltaX = ballX - (paddleX + paddleWidth / 2);
+    adjustBallSpeed(deltaX);
   }
 
-  // ボールとブロックの当たり判定
+  // ボールとレンガの衝突を検出する
+  checkBrickCollisions();
+}
+
+function reverseBallYSpeed() {
+  ballYSpeed *= -1;
+}
+
+function adjustBallSpeed(deltaX) {
+  let currentSpeed = calculateCurrentSpeed();
+  let angle = deltaX * 0.05;
+  ballXSpeed = currentSpeed * Math.sin(angle);
+  ballYSpeed = -Math.abs(currentSpeed * Math.cos(angle));
+}
+
+function calculateCurrentSpeed() {
+  return Math.sqrt(ballXSpeed ** 2 + ballYSpeed ** 2);
+}
+
+function checkBrickCollisions() {
   for (let brick of bricks) {
     if (
       ballX + ballRadius > brick.x &&
@@ -139,7 +170,7 @@ function checkCollision() {
       ballY - ballRadius < brick.y + brickHeight
     ) {
       bricks.splice(bricks.indexOf(brick), 1);
-      ballYSpeed *= -1;
+      reverseBallYSpeed();
     }
   }
   if (bricks.length === 0) {
@@ -151,6 +182,8 @@ function drawLives() {
   fill(0);
   textSize(20);
   textAlign(LEFT, TOP);
+
+  //Mission3: ライフを表示してみよう
   text(`ライフ: ${lives}`, 5, 5);
 }
 
@@ -166,8 +199,8 @@ function gameOver() {
 }
 
 function keyPressed() {
+  // スペースキーが押され、かつライフが0の場合
   if (keyCode == 32 && lives == 0) {
-    // スペースキーが押され、かつライフが0の場合
     setup();
     loop();
   } else if (keyCode == 32 && ClearFlag == true) {
@@ -180,6 +213,7 @@ function showClearScreen() {
   fill(0);
   textSize(30);
   textAlign(CENTER, CENTER);
+  //Extra1: クリアメッセージを変更してみよう
   text("Clear!", width / 2, height / 2);
   textSize(20);
   text("Press SPACE to Restart", width / 2, height / 2 + 50);
